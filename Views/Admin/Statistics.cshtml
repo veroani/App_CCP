@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Users>
+
+<h1>Statistici deținători carduri</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form asp-controller="Admin" asp-action="Statistics" method="get">
+            <div class="input-group">
+                <input type="date" name="expirationDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <input type="text" name="uniqueCode" class="form-control" placeholder="Cod unic" />
+                <button type="submit" class="btn btn-primary">Filtrează</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nume complet</th>
+            <th>Email</th>
+            <th>Adresă</th>
+            <th>Data nașterii</th>
+            <th>Data expirării cardului</th>
+            <th>Cod unic</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>@user.Address</td>
+                <td>@(user.DateOfBirth?.ToString("dd.MM.yyyy") ?? "-")</td>
+                <td>@user.ExpirationDate.ToString("dd.MM.yyyy")</td>
+                <td>@user.UniqueCode</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Afișează numărul de utilizatori -->
+<div class="mt-4">
+    <strong>Total rezultate: </strong>@ViewBag.TotalCount
+</div>
+
+<div class="container text-end mt-4">
+    <button type="button" class="btn btn-outline-dark back-button">
+        <i class="fas fa-arrow-left"></i> Înapoi
+    </button>
+</div>

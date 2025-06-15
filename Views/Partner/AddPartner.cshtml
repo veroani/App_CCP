@@ -1,0 +1,55 @@
+﻿@model Partners
+@{
+    ViewData["Title"] = "Adaugă Partener";
+}
+
+<h2 class="mb-4">Adaugă un Partener Nou</h2>
+
+<form asp-action="AddPartner" method="post">
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <select asp-for="UserId" asp-items="ViewBag.UsersList" class="form-control">
+            <option value="">-- Fără utilizator asociat --</option> 
+        </select>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" maxlength="500"></textarea>
+        <small class="form-text text-muted">Maxim 500 caractere.</small>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DiscountDetails" class="form-label"></label>
+        <textarea asp-for="DiscountDetails" class="form-control"></textarea>
+        <span asp-validation-for="DiscountDetails" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="WebsiteUrl" class="form-label"></label>
+        <input asp-for="WebsiteUrl" class="form-control" />
+        <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-4">
+        <label asp-for="LogoUrl" class="form-label"></label>
+        <input asp-for="LogoUrl" class="form-control" />
+        <span asp-validation-for="LogoUrl" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Manage" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Înapoi
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Adaugă Partener
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Profilul meu";
+}
+
+
+<h1 class="mb-4">Profilul meu</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row g-4 align-items-center">
+            <!-- Poză de profil -->
+            <div class="col-12 col-md-4 text-center">
+                <label class="form-label">Fotografie de profil</label>
+                <div>
+                    @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+                    {
+                        <img src="@Model.ProfilePicturePath" alt="Fotografie de profil"
+                             class="img-thumbnail mb-2" style="width: 150px; height: 150px;" />
+                    }
+                    else
+                    {
+                        <p>Nu ai încărcat o fotografie de profil.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Detalii utilizator -->
+            <div class="col-12 col-md-8">
+                <dl class="row">
+                    <dt class="col-sm-4">Nume complet</dt>
+                    <dd class="col-sm-8">@Model.FullName</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">Telefon</dt>
+                    <dd class="col-sm-8">@Model.PhoneNumber</dd>
+
+                    <dt class="col-sm-4">Adresă</dt>
+                    <dd class="col-sm-8">@Model.Address</dd>
+
+                    <dt class="col-sm-4">Naționalitate</dt>
+                    <dd class="col-sm-8">@Model.Nationality</dd>
+
+                    <dt class="col-sm-4">Data nașterii</dt>
+                    <dd class="col-sm-8">
+                        @(Model.DateOfBirth?.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("ro-RO")) ?? "Nespecificată")
+                    </dd>
+
+                    <dt class="col-sm-4">Vârstă</dt>
+                    <dd class="col-sm-8">@Model.Age</dd>
+
+                    <dt class="col-sm-4">Locul nașterii</dt>
+                    <dd class="col-sm-8">@Model.PlaceOfBirth</dd>
+
+                    <dt class="col-sm-4">Ocupație</dt>
+                    <dd class="col-sm-8">@Model.Occupation</dd>
+
+                    <dt class="col-sm-4">Mențiuni</dt>
+                    <dd class="col-sm-8">@Model.Mentions</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Butoane -->
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <a href="@Model.ProfileCardUrl" target="_blank" class="btn btn-outline-primary">Vezi Card Cultural</a>
+    <a asp-action="Edit" class="btn btn-primary">Editează profilul</a>
+</div>
+<div class="container text-end mt-4 mb-5">
+    <button type="button" class="btn btn-outline-secondary back-button">
+        <i class="fas fa-undo"></i> Înapoi
+    </button>
+</div>

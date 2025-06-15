@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Politica de Confidențialitate";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Aici puteți consulta politica noastră de confidențialitate.</p>
+
+@if (ViewBag.PrivacyPolicyExists == true)
+{
+    <a href="/uploads/PrivacyPolicy.pdf" class="btn btn-outline-primary" target="_blank">
+        Vizualizează Politica de Confidențialitate (PDF)
+    </a>
+}
+else
+{
+    <p class="text-muted">Documentul Politica de Confidențialitate nu este disponibil momentan.</p>
+}
+<div>
+<a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary mt-3">
+    <i class="fas fa-arrow-left me-1"></i> Înapoi la pagina principală
+</a>
+</div>
+

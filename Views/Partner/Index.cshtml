@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Partners>
+
+@{
+    ViewData["Title"] = "Parteneri și Reduceri";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nume Partener</th>
+            <th>Descriere</th>
+            <th>Detalii Reducere</th>
+            <th>Website</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var partner in Model)
+        {
+            <tr>
+                <td>@partner.Name</td>
+                <td>@partner.Description</td>
+                <td>@partner.DiscountDetails</td>
+                <td><a href="@partner.WebsiteUrl" target="_blank">Website</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

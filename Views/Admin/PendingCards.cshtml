@@ -1,0 +1,72 @@
+﻿@model List<App_CCP.Models.Users>
+@{
+    ViewData["Title"] = "Carduri în așteptare";
+}
+
+<h2 class="mb-4">Carduri neaprobate</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Nu există utilizatori cu carduri în așteptare.</div>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Nume</th>
+                <th>Email</th>
+                <th>Data nașterii</th>
+                <th>Statut</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td>@(user.DateOfBirth?.ToString("dd.MM.yyyy") ?? "-")</td>
+                    <td>
+                        @if (!user.IsCardApprovedByAdmin)
+                        {
+                            <span class="badge bg-warning text-dark">Neaprobat</span>
+                        }
+                        else if (user.IsCardRevoked)
+                        {
+                            <span class="badge bg-danger">Revocat</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Aprobat</span>
+                        }
+                    </td>
+                    <td> 
+                        @if (user.IsCardApprovedByAdmin && !user.IsCardRevoked)
+                        {
+                            <form asp-action="RevokeCard" method="post" class="d-inline"
+                                  onsubmit="return confirm('Revocați cardul acestui utilizator?');">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <input type="hidden" name="returnTo" value="PendingCards" />
+                                <button type="submit" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-ban"></i> Revocă
+                                </button>
+                            </form>
+                        }
+                        @if (!user.IsCardApprovedByAdmin || user.IsCardRevoked)
+                        {
+                            <form asp-action="ApproveCard" method="post" class="d-inline">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <input type="hidden" name="returnTo" value="PendingCards" />
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check"></i> Aprobă
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

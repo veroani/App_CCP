@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+
+<h2>Contact</h2>
+<p>Pentru ajutor, contactează-ne la :</p>
+
+<ul>
+    <li> 📧 E-mail: <a href="mailto:arsenieveronica@gmail.com">contact.timisoara@xxx.com</a></li>
+    <li> ☎ Telefon: +40 123 456 789</li>
+</ul>
+
+<p>Poti de asemenea să ne trimiți un mesaj:</p>
+
+<form method="post" asp-controller="Help" asp-action="Contact">
+    <label for="nume">Nume:</label>
+    <input type="text" id="nume" name="nume" class="form-control" required title="Numele este obligatoriu." />
+
+    <label for="e-mail">E-mail:</label>
+    <input type="email" name="email" class="form-control" required title="Email-ul este obligatoriu." />
+
+    <label for="mesaj">Mesaj:</label>
+    <textarea id="mesaj" name="mesaj" class="form-control" required title="Mesajul este obligatoriu."></textarea>
+
+    <button type="submit" class="btn btn-primary mt-2">Trimite</button>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <p class="alert alert-info">@ViewBag.Message</p>
+}
+
+<div class="container text-end mt-4">
+    <button type="button" class="btn btn-outline-dark back-button">
+        <i class="fas fa-arrow-left"></i> Înapoi
+    </button>
+</div>

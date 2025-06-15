@@ -1,0 +1,58 @@
+﻿﻿@using App_CCP.View_Models;
+@model RegisterViewModel;
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light" style="background-image: url('/images/FB Cover_CulturaPLUS.png'); background-size: cover; background-position: center;">
+    <div class="account-box bg-white p-5 rounded shadow ms-3 ms-md-5" style="margin-left: 100px;">
+        <h2 class="text-center mb-4 text-success">Înregistrare</h2>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <required-label asp-for="Name" class="form-label fw-semibold"></required-label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <required-label asp-for="Email" class="form-label fw-semibold"></required-label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <required-label asp-for="Password" class="form-label fw-semibold"></required-label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <required-label asp-for="ConfirmPassword" class="form-label fw-semibold"></required-label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <input type="submit" value="Înregistrează-te" class="btn btn-success w-100 p-2 fw-bold" />
+
+            <p class="text-center mt-3">
+                Ai deja un cont?
+                <a asp-controller="Account" asp-action="Login" class="text-decoration-none text-success fw-semibold">Autentificare</a>
+            </p>
+            <div class="text-center mt-2">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-secondary">Înapoi la prima pagină</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}

@@ -1,0 +1,70 @@
+﻿@model List<App_CCP.View_Models.UserRoleViewModel>
+
+<h2>Gestionare Roluri</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<div class="table-responsive">
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Nume</th>
+            <th>Rol</th>
+            <th>Acțiuni</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
+                <td>
+                    @foreach (var role in user.Roles)
+                    {
+                        <span class="badge bg-secondary me-1">@role</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="ToggleAdminRole" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        @if (user.IsAdmin)
+                        {
+                            <button type="submit" class="btn btn-danger btn-sm">Revocă Admin</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success btn-sm">Acordă Admin</button>
+                        }
+                    </form>
+                </td>
+                <td>
+                    <form asp-action="TogglePartnerRole" method="post">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        @if (user.IsPartner)
+                        {
+                            <button type="submit" class="btn btn-danger btn-sm">Revocă Partener</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success btn-sm">Acordă Partener</button>
+                        }
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+<div class="container text-end mt-4">
+    <button type="button" class="btn btn-outline-secondary back-button">
+        <i class="fas fa-undo"></i> Înapoi
+    </button>
+</div>
+

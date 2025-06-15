@@ -1,0 +1,56 @@
+﻿@model App_CCP.View_Models.AboutCCPViewModel
+
+<form asp-action="Edit" method="post">
+    <label>Titlu:</label>
+    <input asp-for="Titlu" class="form-control" />
+
+    <label>Descriere:</label>
+    <textarea asp-for="Descriere" class="form-control"></textarea>
+
+    <label>Imagine URL:</label>
+    <input asp-for="ImagineUrl" class="form-control" />
+    @if (!string.IsNullOrEmpty(Model.ImagineUrl))
+    {
+        <div class="text-center my-3">
+            <img src="@Model.ImagineUrl" alt="Previzualizare Imagine"
+                 style="max-width: 10%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+        </div>
+    }
+
+    <h4>Avantaje:</h4>
+    <div id="avantaje-container">
+        @for (int i = 0; i < Model.Avantaje.Count; i++)
+        {
+            <div class="mb-2">
+                <input name="Avantaje[@i]" value="@Model.Avantaje[i]" class="form-control d-inline-block w-75" />
+                <button type="button" class="btn btn-danger" onclick="removeAvantaj(this)">Șterge</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-secondary my-2" onclick="addAvantaj()">Adaugă Avantaj</button>
+
+    <br />
+    <div class="container text-end mt-4 mb-5">
+    <button type="submit" class="btn btn-primary mt-3">Salvează</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function addAvantaj() {
+            const container = document.getElementById('avantaje-container');
+            const index = container.children.length;
+            const div = document.createElement('div');
+            div.className = "mb-2";
+            div.innerHTML = `
+                <input name="Avantaje[${index}]" class="form-control d-inline-block w-75" />
+                <button type="button" class="btn btn-danger" onclick="removeAvantaj(this)">Șterge</button>`;
+            container.appendChild(div);
+        }
+
+        function removeAvantaj(button) {
+            button.parentElement.remove();
+        }
+    </script>
+}

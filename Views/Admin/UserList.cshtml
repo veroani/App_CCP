@@ -1,0 +1,133 @@
+﻿@model IEnumerable<App_CCP.Models.Users>
+
+@{
+    ViewData["Title"] = "Lista utilizatorilor";
+}
+
+<h1>Lista Utilizatorilor</h1>
+
+<!-- Formular de căutare -->
+<form method="get" asp-action="UserList">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Căutare după email, nume sau cod unic..." name="searchQuery" value="@Context.Request.Query["searchQuery"]" />
+        <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i> Căutare</button>
+        <a href="@Url.Action("UserList")" class="btn btn-outline-danger"><i class="fas fa-sync-alt"></i> Reset</a>
+    </div>
+</form>
+
+@if (!Model.Any())  // Dacă nu sunt utilizatori
+{
+    <p>Nu există utilizatori care să corespundă criteriilor de căutare.</p>
+}
+else  //Dacă există utilizatori
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center bg-light">Nume</th>
+                    <th class="text-center bg-light">Email</th>
+                    <th class="text-center bg-light">Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td class="text-center">@user.FullName</td>
+                        <td class="text-center">@user.Email</td>
+                        <td class="text-center align-middle">
+                            <div class="d-flex flex-column align-items-center gap-1">
+
+                                <!-- Afișare -->
+                                <a href="@Url.Action("ViewUser", "Admin", new { id = user.Id })"
+                                   class="btn btn-sm btn-outline-primary w-100">
+                                    <i class="fas fa-user me-1"></i> Afișare
+                                </a>
+
+                                <!-- Editare -->
+                                <a href="@Url.Action("EditUser", "Admin", new { id = user.Id })"
+                                   class="btn btn-sm btn-outline-warning w-100">
+                                    <i class="fas fa-pen-to-square me-1"></i> Editare
+                                </a>
+
+                                <!-- Ștergere -->
+                                <a href="@Url.Action("DeleteUser", "Admin", new { id = user.Id })"
+                                   class="btn btn-sm btn-outline-danger w-100"
+                                   onclick="return confirm('Sigur doriți ștergerea acestui utilizator?');">
+                                    <i class="fas fa-trash me-1"></i> Ștergere
+                                </a>
+
+                                <!-- Resetare parolă -->
+                                <form asp-action="SendPasswordResetLink" method="post" class="w-100 d-inline">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
+                                        <i class="fas fa-key me-1"></i> Resetare parolă
+                                    </button>
+                                </form>
+
+                                @if (TempData[$"SuccessMessage_{user.Id}"] is string message)
+                                {
+                                    <div class="alert alert-success alert-dismissible fade show mt-2 w-100" role="alert">
+                                        @message
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Închide"></button>
+                                    </div>
+                                }
+
+                                <!-- Aprobare / Revocare card -->
+                                @if (user.IsCardApprovedByAdmin && !user.IsCardRevoked)
+                                {
+                                    <form asp-action="RevokeCard" method="post" class="w-100"
+                                          onsubmit="return confirm('Revocați cardul acestui utilizator?');">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <input type="hidden" name="returnTo" value="UserList" />
+                                        <button type="submit" class="btn btn-sm btn-outline-warning w-100">
+                                            <i class="fas fa-ban me-1"></i> Revocă card
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="ApproveCard" method="post" class="w-100"
+                                          onsubmit="return confirm('Aprobați cardul acestui utilizator?');">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <input type="hidden" name="returnTo" value="UserList" />
+                                        <button type="submit" class="btn btn-sm btn-outline-success w-100">
+                                            <i class="fas fa-check me-1"></i> Aprobă card
+                                        </button>
+                                    </form>
+                                }
+
+                                <!-- Status card sub toate butoanele -->
+                                @if (user.IsCardRevoked)
+                                {
+                                    <div class="bg-danger text-white rounded px-3 py-1 mt-2 w-100 text-center">
+                                        <i class="fas fa-ban me-1"></i> Card revocat
+                                    </div>
+                                }
+                                else if (!user.IsCardApprovedByAdmin)
+                                {
+                                    <div class="bg-warning text-dark rounded px-3 py-1 mt-2 w-100 text-center">
+                                        <i class="fas fa-hourglass-half me-1"></i> Așteaptă aprobare
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="bg-success text-white rounded px-3 py-1 mt-2 w-100 text-center">
+                                        <i class="fas fa-check me-1"></i> Card activ
+                                    </div>
+                                }
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<div class="container text-end mt-4">
+    <button type="button" class="btn btn-outline-secondary back-button">
+        <i class="fas fa-undo"></i> Înapoi
+    </button>
+</div>

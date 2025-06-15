@@ -1,0 +1,16 @@
+﻿@model App_CCP.Models.Users
+@{
+    ViewData["Title"] = "Card în așteptare";
+}
+@if (TempData["Warning"] is string message)
+{
+    <div class="alert alert-warning">@message</div>
+}
+<p>Cardul tău cultural va fi disponibil imediat ce un administrator îl aprobă.</p>
+
+@if (Model != null && Model.IsCardRevoked)
+{
+    <div class="alert alert-danger">
+        Cardul tău a fost revocat de către un administrator.
+    </div>
+}

@@ -1,0 +1,75 @@
+﻿@model Partners
+
+@{
+    ViewData["Title"] = "Editare Partener";
+}
+
+<h2>Editare Partener</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="EditPartner" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group">
+            <label asp-for="UserId">Utilizator asociat</label>
+            <select asp-for="UserId" asp-items="ViewBag.UsersList" class="form-control">
+                <option value="">-- Fără utilizator asociat --</option>
+            </select>
+            <span asp-validation-for="UserId" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="UserId" />
+    }
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control" maxlength="500"></textarea>
+        <small class="form-text text-muted">Maxim 500 caractere.</small>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DiscountDetails"></label>
+        <textarea asp-for="DiscountDetails" class="form-control"></textarea>
+        <span asp-validation-for="DiscountDetails" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LogoUrl"></label>
+        <input asp-for="LogoUrl" class="form-control" />
+        <span asp-validation-for="LogoUrl" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="WebsiteUrl"></label>
+        <input asp-for="WebsiteUrl" class="form-control" />
+        <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Actualizează Partener</button>
+</form>
+
+<div class="container text-end mt-4 mb-5">
+    <a asp-action="Manage" class="btn btn-outline-dark back-button">
+        <i class="fas fa-arrow-left"></i> Înapoi
+    </a>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

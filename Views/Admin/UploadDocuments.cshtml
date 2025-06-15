@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Upload Documente";
+    var documents = ViewBag.Documents as List<string>;
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Încărcare Documente</h1>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Errors"] != null)
+    {
+        var errors = TempData["Errors"] as List<string>;
+        if (errors != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @foreach (var error in errors)
+                {
+                    <div>@error</div>
+                }
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    }
+
+    <!-- Formular Upload -->
+    <form asp-action="UploadDocuments" asp-controller="Admin" method="post" enctype="multipart/form-data" class="mb-5">
+        <div class="mb-3">
+            <label class="form-label">Privacy Policy (PDF):</label>
+            <input type="file" name="privacyPolicy" accept=".pdf" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Terms & Conditions (PDF):</label>
+            <input type="file" name="termsConditions" accept=".pdf" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Încarcă Documente</button>
+    </form>
+
+    <h2 class="mb-3">Documente Existente</h2>
+
+    @if (documents != null && documents.Any())
+    {
+        <ul class="list-group">
+            @foreach (var doc in documents)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="/uploads/@doc" target="_blank">@doc</a>
+                    <form asp-action="DeleteDocument" asp-controller="Admin" method="post" class="d-inline">
+                        <input type="hidden" name="documentName" value="@doc" />
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Sigur vrei să ștergi @doc?');">
+                            Șterge
+                        </button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">Nu există documente încărcate.</p>
+    }
+</div>
+

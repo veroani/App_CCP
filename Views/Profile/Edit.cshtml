@@ -1,0 +1,136 @@
+﻿﻿@using App_CCP.View_Models;
+@model EditProfileViewModel
+@{
+    ViewData["Title"] = "Editare Profil";
+}
+
+<h1 class="mb-4">Editare Profil</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        @Html.Raw(TempData["SuccessMessage"])
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Închide"></button>
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div class="row g-4 align-items-start">
+                <!-- Col 1: Imagine profil -->
+                <div class="col-12 col-md-4 text-center">
+                    <required-label class="form-label">Fotografie de profil</required-label>
+                    <div class="mb-3">
+                        <img id="previewImage" src="@Model.ProfilePicturePath" alt="Profil"
+                             class="img-thumbnail rounded-circle shadow"
+                             style="width: 150px; height: 150px; object-fit: cover;" />
+                    </div>
+                    <div class="mb-3">
+                        <input type="file" class="form-control" asp-for="ProfilePicture" id="profilePictureInput" accept="image/*" />
+                        @Html.ValidationMessageFor(m => m.ProfilePicture, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <!-- Col 2: Formular -->
+                <div class="col-12 col-md-8">
+                    <div class="mb-3">
+                        <required-label asp-for="FullName" class="form-label">Nume complet</required-label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <required-label asp-for="Email" class="form-label">Email</required-label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <required-label asp-for="PhoneNumber" class="form-label">Număr de telefon</required-label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <required-label asp-for="DateOfBirth" class="form-label">Data nașterii</required-label>
+                        <input asp-for="DateOfBirth" type="date"  />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <required-label asp-for="PlaceOfBirth" class="form-label">Locul nașterii</required-label>
+                        <input asp-for="PlaceOfBirth" class="form-control" />
+                        <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <required-label asp-for="Nationality" class="form-label">Naționalitate</required-label>
+                        <input asp-for="Nationality" class="form-control" />
+                        <span asp-validation-for="Nationality" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <required-label asp-for="Address" class="form-label">Adresă</required-label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Occupation" class="form-label">Ocupație</label>
+                        <select asp-for="Occupation" class="form-select">
+                            <option value="">Selectează o ocupație</option>
+                            @foreach (var occupation in Enum.GetValues(typeof(App_CCP.Models.Occupation)))
+                            {
+                                <option value="@occupation">@occupation</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Occupation" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Mentions" class="form-label">Mențiuni</label>
+                        <textarea asp-for="Mentions" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Mentions" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Butoane -->
+            <div class="mt-4 d-flex flex-wrap gap-3 justify-content-center">
+                <button type="submit" class="btn btn-primary px-4">Salvează modificările</button>
+                <a href="@Model.ProfileCardUrl" target="_blank" class="btn btn-outline-primary">Vezi Card Cultural</a>
+                <a asp-action="Index" class="btn btn-outline-dark px-4">Renunță</a>
+            </div>
+
+            <!-- Erori model -->
+            <div class="mt-4">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div class="alert alert-danger">@error.ErrorMessage</div>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container text-end mt-4 mb-5">
+    <button type="button" class="btn btn-outline-secondary back-button">
+        <i class="fas fa-undo"></i> Înapoi
+    </button>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+<script>
+    document.getElementById("profilePictureInput").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("previewImage").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

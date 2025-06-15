@@ -1,0 +1,29 @@
+﻿@model App_CCP.Models.Review
+
+@{
+    ViewData["Title"] = "Adaugă o recenzie";
+}
+
+<h2>Scrie o recenzie</h2>
+
+<form asp-action="AddReview" method="post">
+    <div class="form-group">
+        <label asp-for="Alias">Nume afișat (opțional)</label>
+        <input asp-for="Alias" class="form-control" placeholder="Ex: Denis, Maia, etc." />
+        <span asp-validation-for="Alias" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Content">Conținut</label>
+        <textarea asp-for="Content" class="form-control" rows="5" placeholder="Scrie părerea ta..."></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Trimite recenzie</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

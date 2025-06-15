@@ -1,0 +1,188 @@
+﻿@model App_CCP.View_Models.AdminEditUserViewModel
+@{
+    ViewData["Title"] = "Editare Utilizatori";
+}
+
+<h1>Editare Profil Utilizator</h1>
+
+
+<form id="editUserForm" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="ConcurrencyStamp" />
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-4">
+                <!-- Col 1: Poză de profil -->
+                <div class="col-12 col-md-4 text-center">
+                    <label class="form-label">Fotografie de profil</label>
+                    <div class="mb-3">
+                        @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+                        {
+                            <img src="@Model.ProfilePicturePath" id="previewImage" alt="Profil"
+                                 class="img-thumbnail rounded-circle shadow"
+                                 style="width: 150px; height: 150px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-profile.png" id="previewImage" alt="Fără poză"
+                                 class="img-thumbnail rounded-circle shadow"
+                                 style="width: 150px; height: 150px; object-fit: cover;" />
+                        }
+                    </div>
+                    <input type="file" asp-for="ProfilePicture" class="form-control" id="profilePictureInput" accept="image/*" />
+                    <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                </div>
+
+                <!-- Col 2: Formular -->
+                <div class="col-12 col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label">Nume complet</label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label">Utilizator</label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label">Telefon</label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">Adresă</label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Nationality" class="form-label">Naționalitate</label>
+                        <input asp-for="Nationality" class="form-control" />
+                        <span asp-validation-for="Nationality" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DateOfBirth" class="form-label">Data nașterii</label>
+                        <input asp-for="DateOfBirth" type="date" class="form-control" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        <!--<small class="text-muted d-block mt-1"><strong>Vârstă:</strong> @Model.Age ani</small>-->
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PlaceOfBirth" class="form-label">Locul nașterii</label>
+                        <input asp-for="PlaceOfBirth" class="form-control" />
+                        <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Occupation" class="form-label">Ocupație</label>
+                        <select asp-for="Occupation" class="form-select">
+                            <option value="">Selectează o ocupație</option>
+                            @foreach (var occupation in Enum.GetValues(typeof(App_CCP.Models.Occupation)))
+                            {
+                                <option value="@occupation">@occupation</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Occupation" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ExpirationDate" class="form-label">Data expirării cardului</label>
+                        <input asp-for="ExpirationDate" type="date" class="form-control" />
+                        <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                    </div>
+                    
+
+                    <div class="mb-3">
+                        <label asp-for="UniqueCode" class="form-label">Cod unic</label>
+                        <input asp-for="UniqueCode" class="form-control" />
+                        <span asp-validation-for="UniqueCode" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Butoane -->
+    <div class="text-center d-flex flex-wrap gap-3 justify-content-center">
+        <button type="submit" class="btn btn-success px-4">Salvează modificările</button>
+        <a asp-action="ViewUser" asp-route-id="@Model.Id" class="btn btn-outline-dark px-4">
+            <i class="fas fa-user"></i> Afișare profil
+        </a>
+    </div>
+    <div id="formErrors" class="alert alert-danger" style="display:none;"></div>
+</form>
+
+
+<!-- Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Succes!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Profilul a fost actualizat cu succes!
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container text-end mt-4 mb-5">
+    <button type="button" class="btn btn-outline-secondary back-button">
+        <i class="fas fa-undo"></i> Înapoi
+    </button>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function () {
+            $('#editUserForm').submit(function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("EditUser", "Admin")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            $('#successModal').modal('show');
+                        } else {
+                            // Curata erorile anterioare
+                            $('.text-danger').text('');
+
+                            if (response.errors && response.errors.length > 0) {
+                                // Afiseaza erorile globale
+                                let errorList = '<ul>';
+                                response.errors.forEach(function (error) {
+                                    errorList += `<li>${error}</li>`;
+                                });
+                                errorList += '</ul>';
+
+                                $('#formErrors').html(errorList).show();
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert('A apărut o eroare la trimiterea formularului.');
+                    }
+                });
+            });
+        });
+    </script>
+}

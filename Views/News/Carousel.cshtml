@@ -1,0 +1,47 @@
+﻿@model List<App_CCP.Models.NewsItem>
+@{
+    ViewData["Title"] = "Noutăți";
+}
+
+@if (Model.Any())
+{
+    <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var item = Model[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath" class="d-block w-100" alt="@item.Title"
+                             style="object-fit: cover; max-height: 500px;" />
+                    }
+                    <!-- Mutăm titlul și descrierea sub imagine -->
+                    <div class="p-3 bg-light border-top" style="max-height: 140px; overflow-y: auto;">
+                        <h5 class="mb-1">@item.Title</h5>
+                        @if (!string.IsNullOrEmpty(item.Description))
+                        {
+                            <p class="mb-0">@item.Description</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">Momentan nu sunt noutăți disponibile.</div>
+}
+<div class="container text-end mt-4 mb-5">
+    <button type="button" class="btn btn-outline-secondary back-button">
+        <i class="fas fa-undo"></i> Înapoi
+    </button>
+</div>

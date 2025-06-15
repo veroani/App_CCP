@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Review>  
+
+<h2>Recenzii publicate</h2>
+
+@if (Model.Any())
+{
+    <ul class="list-group">
+        @foreach (var review in Model)
+        {
+            <li class="list-group-item">
+                <strong>@(string.IsNullOrWhiteSpace(review.Alias) ? "Anonim" : review.Alias)</strong>
+                <span class="text-muted"> - @review.DateCreated.ToString("dd.MM.yyyy")</span>
+                <p>@review.Content</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Nu sunt publicate recenzii-uri.</p>
+}

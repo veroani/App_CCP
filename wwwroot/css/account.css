@@ -1,0 +1,35 @@
+﻿.account_container {
+    background-color: #fffbeb;
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat-y;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.btn-success {
+    background-color: #21afac;
+    border-color: #21afac;
+}
+
+a {
+    color: #21afac;
+    text-decoration: underline;
+}
+
+.account-box {
+    background-image: url('');
+    background-size: 100%; /* Sau folosește o dimensiune fixă, de exemplu: 100px */
+    background-repeat: no-repeat; /* pentru a evita repetarea imaginii */
+    background-position: center 5%; /* pentru a centra imaginea */
+    /*background-color: #fbfcfc*/
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 100%;
+    opacity: .9;
+}

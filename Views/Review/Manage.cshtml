@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Review>
+
+<h2>Gestionare Recenzii</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Nume Utilizator</th>
+            <th>Review</th>
+            <th>Data</th>
+            <th>Acțiuni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.UserName</td>
+                <td>@review.Content</td>
+                <td>@review.DateCreated</td>
+                <td>
+                    <div class="d-flex gap-2 mt-2">
+                        @if (!review.IsPublished)
+                        {
+                            <form method="post" asp-action="PublishReview" asp-route-id="@review.Id">
+                                <button type="submit" class="btn btn-outline-success">
+                                    <i class="bi bi-eye-fill"></i> Publică
+                                </button>
+                            </form>
+                        }
+
+                        <form method="post" asp-action="DeleteReview" asp-route-id="@review.Id">
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-trash-fill"></i> Șterge
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

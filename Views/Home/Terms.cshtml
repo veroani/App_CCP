@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Condiții Generale de Utilizare";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Bun venit ! Aici puteți consulta condițiile generale de utilizare ale acestei aplicații.</p>
+
+@if (ViewBag.TermsExists == true)
+{
+        <a href="/uploads/TermsConditions.pdf" class="btn btn-outline-primary" target="_blank">
+        Descarcă Termeni și Condiții (PDF)
+    </a>
+}
+else
+{
+    <p class="text-muted">Documentul Termeni și Condiții nu este disponibil momentan.</p>
+}
+<p>
+    Pe scurt!
+</p>
+<ul>
+    <li>Completați datele reale și corecte în profilul dvs.</li>
+    <li>Cardul emis este valabil doar dacă este aprobat de un administrator.</li>
+    <li>Avantajele cardului pot fi retrase în cazul nerespectării regulamentului.</li>
+    <li>Utilizatorii sunt responsabili pentru păstrarea confidențialității contului lor.</li>
+</ul>
+<p>
+    Pentru mai multe detalii, ne puteți contacta la <a href="mailto:contact.timisoara@ift.ro">contact.timisoara@ift.ro</a>.
+</p>
+<div>
+<a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary mt-3">
+    <i class="fas fa-arrow-left me-1"></i> Înapoi la pagina principală
+</a>
+</div>

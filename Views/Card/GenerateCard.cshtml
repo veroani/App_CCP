@@ -1,0 +1,48 @@
+﻿@model App_CCP.View_Models.CardViewModel
+
+<div class="cultural-card">
+    <!-- Imaginea de fundal -->
+    <div class="card-background">
+        <img src="@Url.Content("~/images/card-background.png")" alt="Background Image" />
+    </div>
+
+    <!-- Continutul cardului -->
+    <div class="card-content">
+        <!-- Fotografia de profil -->
+        @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+        {
+            <img class="profile-picture" src="@Url.Content(Model.ProfilePicture)" alt="Profile Picture" />
+        }
+        else
+        {
+            <p>Fără imagine disponibilă</p>
+        }
+        <!-- Nume complet -->
+        <p class="name">@Model.FullName</p>
+
+        <!-- Data expirarii -->
+        <p class="expiration-date">Expira: @Model.ExpirationDateDisplay</p>
+
+        @if (!string.IsNullOrEmpty(Model.BarcodeSvg))
+        {
+            <div class="barcode text-center">
+                @Html.Raw(Model.BarcodeSvg) <!-- SVG-ul codului de bare -->
+                <div class="barcode-text">
+                    <strong>@Model.UniqueCode</strong>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Cod de bare indisponibil</p>
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ExpirationMessage))
+{
+    <div class="alert alert-warning mt-3 p-3 text-left rounded shadow-sm d-inline-block mx-auto">
+        @Model.ExpirationMessage
+    </div>
+}
+

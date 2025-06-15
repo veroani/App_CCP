@@ -1,0 +1,195 @@
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: #fffbeb;
+        color: black;
+    }
+
+    main {
+        flex: 1 0 auto;
+        overflow: auto;
+    }
+
+    footer {
+        position: static !important;
+        bottom: auto !important;
+        width: 100%;
+        line-height: normal;
+    }
+
+    @media (max-width: 768px) {
+        footer .container {
+            flex-direction: column !important;
+            align-items: center;
+            text-align: center;
+            gap: 0.75rem;
+        }
+    }
+
+    .btn-primary {
+        background-color: #198754;
+    }
+
+    a {
+        color: #198754;
+    }
+
+    .nav-link {
+        color: #198754;
+    }
+
+    .navbar-toggler-icon {
+        display: inline-block;
+        width: 26px;
+        height: 22px;
+        position: relative;
+    }
+
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after,
+    .navbar-toggler-icon div {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 1px; /* Grosimea liniei */
+        background-color: white; /* Culoarea liniei */
+        margin: 4px 0;
+        border-radius: 3px; /* Optional, colturi rotunjite */
+    }
+
+    #hiddenMenu {
+        position: static; 
+        background-color: hsla(48, 100%, 96%, 0); /* Culoare de fundal */
+        padding: 10px;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    .text-center img {
+        margin-top: 50px;
+        width: 159px;
+        height: 159px;
+    }
+
+    .table {
+        color: black;
+    }
+
+
+    .card {
+        color: black; /* Culoare litere in interiorul panal admin */
+        margin-top: 30px;
+    }
+
+    .cultural-card {
+        position: relative; /* Permite pozitionarea absoluta a elementelor copil in raport cu containerul cardului */
+        width: 400px; /* Latimea cardului */
+        height: 250px; /* inaltimea cardului */
+        border: 1px solid #ccc; /* Adauga o bordura subtire de culoare gri deschis */
+        font-family: Arial, sans-serif; /* Seteaza fontul textului afisat pe card */
+        overflow: hidden; /* Ascunde continutul care depaseste dimensiunile cardului */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adauga o umbra pentru un efect vizual de profunzime */
+        border-radius: 10px; /* Rotunjeste colturile cardului */
+    }
+
+    .card-background img {
+        width: 100%; /* Imaginea de fundal ocupa intreaga latime a cardului */
+        height: 100%; /* Imaginea de fundal ocupa intreaga inaltime a cardului */
+        object-fit: cover; /* Asigura pastrarea proportiilor imaginii si umplerea completa a containerului */
+        position: absolute; /* Pozitioneaza imaginea in raport cu containerul parinte */
+        top: 0; /* Plaseaza imaginea la marginea de sus a cardului */
+        left: 0; /* Plaseaza imaginea la marginea din stanga a cardului */
+        z-index: 1; /* Seteaza imaginea de fundal sa fie in spatele altor elemente */
+    }
+
+    .card-content {
+        position: relative; /* Permite pozitionarea continutului relativ la container */
+        z-index: 2; /* Plaseaza continutul deasupra imaginii de fundal */
+        padding: 20px; /* Adauga spatiu interior in jurul continutului */
+        color: #000; /* Seteaza culoarea textului la negru */
+    }
+
+    .profile-picture {
+        position: absolute; /* Pozitioneaza imaginea in raport cu containerul cardului */
+        top: 115px; /* Distanta de la marginea de sus a cardului */
+        left: 22px; /* Distanta de la marginea din stanga a cardului */
+        width: 100px; /* Latimea imaginii de profil */
+        height: 130px; /* inaltimea imaginii de profil */
+        border-radius: 15%; /* rotunjeste colturile*/
+    }
+
+    .name {
+        position: absolute; /* Pozitioneaza textul in raport cu containerul cardului */
+        top: 20px; /* Distanta de la marginea de sus a cardului */
+        left: 190px; /* Distanta de la marginea din stanga a cardului */
+        font-size: 18px; /* Dimensiunea fontului pentru nume */
+        font-weight: bold; /* Face textul numelui ingrosat */
+    }
+
+    .unique-code {
+        position: absolute; /* Pozitioneaza textul codului unic */
+        top: 64px; /* Distanta de la marginea de sus a cardului */
+        left: 190px; /* Distanta de la marginea din stanga a cardului */
+        font-size: 14px; /* Dimensiunea fontului pentru codul unic */
+    }
+
+    .expiration-date {
+        position: absolute; /* Pozitioneaza textul datei de expirare */
+        top: 65px; /* Distanta de la marginea de sus a cardului */
+        left: 190px; /* Distanta de la marginea din stanga a cardului */
+        font-size: 12px; /* Dimensiunea fontului pentru data de expirare */
+        font-weight: bold;
+        /*font-style: italic; /* Face textul cursiv */
+    }
+    /* Stiluri pentru codul de bare */
+
+    .barcode {
+        position: absolute;
+        top: 102px; /* Plaseaza codul de bare aproape de marginea inferioara */
+        left: 60%;
+        transform: translateX(-30%); /* Centreaza codul de bare pe orizontala */
+        width: 124px; /* Latimea codului de bare */
+        height: auto; /* Inaltimea codului de bare */
+        text-align: center;
+        background: #fff; /* Fundal alb pentru contrast */
+        padding-top: 3px; /* Spatiere în jurul codului de bare */
+        border-radius: 5px; /* Colturi rotunjite */
+        overflow: hidden; /* Ascunde orice depasire */
+    }
+
+    .barcode-text {
+        font-size: 9px;
+        font-weight: bold;
+        color: #000;
+        margin-top: 1px;
+        letter-spacing: 1.5px;
+    }
+
+    .form-group p {
+        border: 1px solid #ccc;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+        display: inline-block; /* sau block pt a ocupa toata latimea */
+        width: 100%; /*  ca un input */
+        color: green;
+    }
+
+    dl.row dt, dl.row dd {
+        margin-bottom: 0.5rem; /* Adauga un spatiu mic intre randuri */
+        padding-bottom: 0; /* Elimina paddingul suplimentar */
+    }
+
+    dl.row dd {
+        margin-left: 0; /* Asigura ca marginile la stanga sunt egale */
+    }
+
+    dl.row {
+        margin-bottom: 1rem; /* Adauga un spatiu intre diferitele sectiuni */
+    }

@@ -1,0 +1,48 @@
+﻿@model List<App_CCP.View_Models.ValidCardUserViewModel>
+
+<h2>Utilizatori cu card valabil</h2>
+
+<!-- Formular de cautare -->
+<form asp-controller="Partner" asp-action="ValidCardUsers" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="searchQuery" class="form-control" placeholder="Caută după cod unic sau nume..." value="@Context.Request.Query["searchQuery"]" />
+        <button class="btn btn-outline-secondary" type="submit">Căutare</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nume Utilizator</th>
+            <th>Cod unic</th>
+            <!-- <th>Email</th>-->
+            <th>Data expirării cardului</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model.Any())
+        {
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FullName</td>
+                <th>@user.UniqueCode</th>
+                <!-- <td>@user.Email</td>-->
+                <td>@user.ExpirationDate.ToShortDateString()</td>
+            </tr>
+        }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center text-muted">Niciun utilizator găsit.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="container text-end mt-4">
+    <button type="button" class="btn btn-outline-dark back-button">
+        <i class="fas fa-arrow-left"></i> Înapoi
+    </button>
+</div>

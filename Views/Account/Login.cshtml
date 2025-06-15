@@ -1,0 +1,59 @@
+﻿﻿@using App_CCP.View_Models;
+@model LoginViewModel;
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-white"
+     style="background-image: url('/images/FB Cover_CulturaPLUS.png'); background-size: cover; background-position: center;">
+
+    <div class="account-box bg-white p-5 rounded shadow ms-3 ms-md-5" style="margin-left: 100px;">
+
+        <h2 class="text-center mb-4 text-success">Autentificare</h2>
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <required-label asp-for="Email" class="form-label fw-semibold"></required-label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <required-label asp-for="Password" class="form-label fw-semibold"></required-label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label class="form-check-label" for="RememberMe">
+                        @Html.DisplayNameFor(m => m.RememberMe)
+                    </label>
+                </div>
+                <a asp-controller="Account" asp-action="ForgotPassword" class="text-decoration-none small">
+                    Ai uitat parola?
+                </a>
+            </div>
+
+            <input type="submit" value="Autentificare" class="btn btn-success w-100 p-2 fw-bold" />
+
+            <p class="text-center mt-3">
+                Nu ai cont? <a asp-controller="Account" asp-action="Register" class="text-decoration-none text-success fw-semibold">Înregistrează-te</a>
+            </p>
+
+            <div class="text-center mt-2">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-secondary">Înapoi la pagina principală</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}
