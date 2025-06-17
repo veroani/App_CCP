@@ -1,16 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Condiții Generale de Utilizare";
+    var doc = ViewBag.Document as Document;
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <p>Bun venit ! Aici puteți consulta condițiile generale de utilizare ale acestei aplicații.</p>
 
-@if (ViewBag.TermsExists == true)
+@if (doc != null)
 {
-        <a href="/uploads/TermsConditions.pdf" class="btn btn-outline-primary" target="_blank">
-        Descarcă Termeni și Condiții (PDF)
+    <a href="/documente/descarca/@doc.Id" target="_blank" class="btn btn-outline-primary">
+    Descarcă Termeni și Condiții (PDF)
     </a>
+    <p class="text-muted mt-2">Publicat pe: @doc.UploadDate.ToLocalTime().ToString("dd.MM.yyyy")</p>
 }
 else
 {

@@ -1,4 +1,5 @@
-﻿using App_CCP.Models;
+﻿using App_CCP.Data;
+using App_CCP.Models;
 using App_CCP.Services.Interfaces;
 using App_CCP.View_Models;
 using Microsoft.AspNetCore.Authorization;
@@ -17,14 +18,17 @@ namespace App_CCP.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ICustomEmailSender _emailSender;
+        private readonly AppDbContext _context;
+        
 
 
-        public AdminController(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment, ICustomEmailSender emailSender)
+        public AdminController(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment, ICustomEmailSender emailSender, AppDbContext context)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _roleManager = roleManager;
             _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
             _emailSender = emailSender;
+            _context = context;
         }
         private IEnumerable<SelectListItem> GetOccupationList()
         {
@@ -426,20 +430,17 @@ namespace App_CCP.Controllers
             TempData["SuccessMessage"] = "Emailul de resetare a fost trimis cu succes.";
             return RedirectToAction("ViewUser", new { id = userId });
         }
+ 
         [HttpGet]
         public IActionResult UploadDocuments()
         {
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-
-            var documents = Directory.Exists(uploadPath)
-                ? Directory.GetFiles(uploadPath)
-                    .Select(Path.GetFileName)
-                    .Where(name => name != null)
-                    .Select(name => name!)
-                    .ToList()
-                : new List<string>();
+            var documents = _context.Documents
+                .Where(d => d.IsActive)
+                .OrderByDescending(d => d.UploadDate)
+                .ToList();
 
             ViewBag.Documents = documents;
+
             return View();
         }
 
@@ -447,47 +448,54 @@ namespace App_CCP.Controllers
         public async Task<IActionResult> UploadDocuments(IFormFile privacyPolicy, IFormFile termsConditions)
         {
             string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
             }
 
-            bool uploaded = false;
             var errors = new List<string>();
+            bool uploaded = false;
 
-            if (privacyPolicy != null)
+            async Task SaveFile(IFormFile file, string type)
             {
-                if (privacyPolicy.ContentType == "application/pdf")
+                if (file != null)
                 {
-                    string privacyPath = Path.Combine(uploadPath, "PrivacyPolicy.pdf");
-                    using var stream = new FileStream(privacyPath, FileMode.Create);
-                    await privacyPolicy.CopyToAsync(stream);
+                    if (file.ContentType != "application/pdf")
+                    {
+                        errors.Add($"Fișierul {type} trebuie să fie în format PDF.");
+                        return;
+                    }
+
+                    string uniqueName = $"{Guid.NewGuid()}.pdf";
+                    string path = Path.Combine(uploadPath, uniqueName);
+
+                    using var stream = new FileStream(path, FileMode.Create);
+                    await file.CopyToAsync(stream);
+
+                    // Dezactivam documentele vechi de acelasi tip
+                    var oldDocs = _context.Documents.Where(d => d.Type == type && d.IsActive);
+                    foreach (var doc in oldDocs)
+                        doc.IsActive = false;
+
+                    // Salvam noul document
+                    _context.Documents.Add(new Document
+                    {
+                        FileName = uniqueName,
+                        OriginalName = file.FileName,
+                        ContentType = file.ContentType,
+                        Type = type
+                    });
+
                     uploaded = true;
-                }
-                else
-                {
-                    errors.Add("Fișierul Privacy Policy trebuie să fie în format PDF.");
                 }
             }
 
-            if (termsConditions != null)
-            {
-                if (termsConditions.ContentType == "application/pdf")
-                {
-                    string termsPath = Path.Combine(uploadPath, "TermsConditions.pdf");
-                    using var stream = new FileStream(termsPath, FileMode.Create);
-                    await termsConditions.CopyToAsync(stream);
-                    uploaded = true;
-                }
-                else
-                {
-                    errors.Add("Fișierul Terms & Conditions trebuie să fie în format PDF.");
-                }
-            }
+            await SaveFile(privacyPolicy, "PrivacyPolicy");
+            await SaveFile(termsConditions, "TermsConditions");
 
             if (uploaded)
             {
+                await _context.SaveChangesAsync();
                 TempData["Message"] = "Documentele au fost încărcate cu succes!";
             }
             else
@@ -498,29 +506,26 @@ namespace App_CCP.Controllers
 
             return RedirectToAction("UploadDocuments");
         }
-
         [HttpPost]
-        public IActionResult DeleteDocument(string documentName)
+        public IActionResult DeleteDocument(int id)
         {
-            if (string.IsNullOrWhiteSpace(documentName))
+            var doc = _context.Documents.FirstOrDefault(d => d.Id == id);
+            if (doc == null)
             {
-                TempData["Errors"] = new List<string> { "Numele documentului este invalid." };
+                TempData["Errors"] = new List<string> { "Documentul nu a fost găsit." };
                 return RedirectToAction("UploadDocuments");
             }
 
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-            string filePath = Path.Combine(uploadPath, documentName);
-
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", doc.FileName);
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
-                TempData["Message"] = $"Documentul {documentName} a fost șters cu succes!";
-            }
-            else
-            {
-                TempData["Errors"] = new List<string> { $"Documentul {documentName} nu a fost găsit." };
             }
 
+            _context.Documents.Remove(doc);
+            _context.SaveChanges();
+
+            TempData["Message"] = $"Documentul {doc.OriginalName} a fost șters cu succes!";
             return RedirectToAction("UploadDocuments");
         }
     }

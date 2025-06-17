@@ -37,89 +37,101 @@ else  //Dacă există utilizatori
                         <td class="text-center">@user.FullName</td>
                         <td class="text-center">@user.Email</td>
                         <td class="text-center align-middle">
-                            <div class="d-flex flex-column align-items-center gap-1">
+                            <div class="d-flex flex-wrap justify-content-center gap-2">
 
                                 <!-- Afișare -->
                                 <a href="@Url.Action("ViewUser", "Admin", new { id = user.Id })"
-                                   class="btn btn-sm btn-outline-primary w-100">
-                                    <i class="fas fa-user me-1"></i> Afișare
+                                   class="btn btn-sm btn-outline-primary" title="Afișare">
+                                    <i class="fas fa-user"></i>
                                 </a>
 
                                 <!-- Editare -->
                                 <a href="@Url.Action("EditUser", "Admin", new { id = user.Id })"
-                                   class="btn btn-sm btn-outline-warning w-100">
-                                    <i class="fas fa-pen-to-square me-1"></i> Editare
+                                   class="btn btn-sm btn-outline-warning" title="Editare">
+                                    <i class="fas fa-pen-to-square"></i>
                                 </a>
 
                                 <!-- Ștergere -->
                                 <a href="@Url.Action("DeleteUser", "Admin", new { id = user.Id })"
-                                   class="btn btn-sm btn-outline-danger w-100"
-                                   onclick="return confirm('Sigur doriți ștergerea acestui utilizator?');">
-                                    <i class="fas fa-trash me-1"></i> Ștergere
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Sigur doriți ștergerea acestui utilizator?');"
+                                   title="Ștergere">
+                                    <i class="fas fa-trash"></i>
                                 </a>
 
-                                <!-- Resetare parolă -->
-                                <form asp-action="SendPasswordResetLink" method="post" class="w-100 d-inline">
-                                    <input type="hidden" name="userId" value="@user.Id" />
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
-                                        <i class="fas fa-key me-1"></i> Resetare parolă
+                                <!-- Dropdown acțiuni secundare -->
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Mai multe">
+                                        <i class="fas fa-ellipsis-v"></i>
                                     </button>
-                                </form>
-
-                                @if (TempData[$"SuccessMessage_{user.Id}"] is string message)
-                                {
-                                    <div class="alert alert-success alert-dismissible fade show mt-2 w-100" role="alert">
-                                        @message
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Închide"></button>
-                                    </div>
-                                }
-
-                                <!-- Aprobare / Revocare card -->
-                                @if (user.IsCardApprovedByAdmin && !user.IsCardRevoked)
-                                {
-                                    <form asp-action="RevokeCard" method="post" class="w-100"
-                                          onsubmit="return confirm('Revocați cardul acestui utilizator?');">
-                                        <input type="hidden" name="userId" value="@user.Id" />
-                                        <input type="hidden" name="returnTo" value="UserList" />
-                                        <button type="submit" class="btn btn-sm btn-outline-warning w-100">
-                                            <i class="fas fa-ban me-1"></i> Revocă card
-                                        </button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <form asp-action="ApproveCard" method="post" class="w-100"
-                                          onsubmit="return confirm('Aprobați cardul acestui utilizator?');">
-                                        <input type="hidden" name="userId" value="@user.Id" />
-                                        <input type="hidden" name="returnTo" value="UserList" />
-                                        <button type="submit" class="btn btn-sm btn-outline-success w-100">
-                                            <i class="fas fa-check me-1"></i> Aprobă card
-                                        </button>
-                                    </form>
-                                }
-
-                                <!-- Status card sub toate butoanele -->
-                                @if (user.IsCardRevoked)
-                                {
-                                    <div class="bg-danger text-white rounded px-3 py-1 mt-2 w-100 text-center">
-                                        <i class="fas fa-ban me-1"></i> Card revocat
-                                    </div>
-                                }
-                                else if (!user.IsCardApprovedByAdmin)
-                                {
-                                    <div class="bg-warning text-dark rounded px-3 py-1 mt-2 w-100 text-center">
-                                        <i class="fas fa-hourglass-half me-1"></i> Așteaptă aprobare
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="bg-success text-white rounded px-3 py-1 mt-2 w-100 text-center">
-                                        <i class="fas fa-check me-1"></i> Card activ
-                                    </div>
-                                }
-
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <form asp-action="SendPasswordResetLink" method="post" class="d-inline">
+                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="fas fa-key me-1"></i> Resetare parolă
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        @if (user.IsCardApprovedByAdmin && !user.IsCardRevoked)
+                                        {
+                                            <li>
+                                                <form asp-action="RevokeCard" method="post" onsubmit="return confirm('Revocați cardul acestui utilizator?');">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="returnTo" value="UserList" />
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-ban me-1"></i> Revocă card
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <form asp-action="ApproveCard" method="post" onsubmit="return confirm('Aprobați cardul acestui utilizator?');">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="returnTo" value="UserList" />
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-check me-1"></i> Aprobă card
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
                             </div>
+
+                            <!-- Mesaj de succes -->
+                            @if (TempData[$"SuccessMessage_{user.Id}"] is string message)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                                    @message
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Închide"></button>
+                                </div>
+                            }
+
+                            <!-- Status card -->
+                            @if (user.IsCardRevoked)
+                            {
+                                <div class="bg-danger text-white rounded px-3 py-1 mt-2">
+                                    <i class="fas fa-ban me-1"></i> Card revocat
+                                </div>
+                            }
+                            else if (!user.IsCardApprovedByAdmin)
+                            {
+                                <div class="bg-warning text-dark rounded px-3 py-1 mt-2">
+                                    <i class="fas fa-hourglass-half me-1"></i> Așteaptă aprobare
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="bg-success text-white rounded px-3 py-1 mt-2">
+                                    <i class="fas fa-check me-1"></i> Card activ
+                                </div>
+                            }
                         </td>
+
                     </tr>
                 }
             </tbody>

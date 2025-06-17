@@ -10,6 +10,7 @@ namespace App_CCP.Data
         public DbSet<Partners> Partners { get; set; } // Adaugă DbSet pentru parteneri
         public DbSet<Review> Reviews { get; set; }
         public DbSet<NewsItem> NewsItems { get; set; }
+        public DbSet<Document> Documents { get; set; }
         public AppDbContext(DbContextOptions options) : base(options)
         {
         }

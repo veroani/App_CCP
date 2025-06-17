@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Upload Documente";
-    var documents = ViewBag.Documents as List<string>;
+    var documents = ViewBag.Documents as List<Document>;
 }
 
 <div class="container mt-5">
@@ -50,11 +50,15 @@
             @foreach (var doc in documents)
             {
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="/uploads/@doc" target="_blank">@doc</a>
+                    <div>
+                        <strong>@doc.Type:</strong>
+                        <a href="/uploads/@doc.FileName" target="_blank">@doc.OriginalName</a><br />
+                        <small class="text-muted">Încărcat pe: @doc.UploadDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</small>
+                    </div>
                     <form asp-action="DeleteDocument" asp-controller="Admin" method="post" class="d-inline">
-                        <input type="hidden" name="documentName" value="@doc" />
+                        <input type="hidden" name="id" value="@doc.Id" />
                         <button type="submit" class="btn btn-sm btn-danger"
-                                onclick="return confirm('Sigur vrei să ștergi @doc?');">
+                                onclick="return confirm('Sigur vrei să ștergi acest document?');">
                             Șterge
                         </button>
                     </form>

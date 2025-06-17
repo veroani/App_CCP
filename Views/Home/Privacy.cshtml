@@ -1,21 +1,24 @@
 ﻿@{
     ViewData["Title"] = "Politica de Confidențialitate";
+    var doc = ViewBag.Document as Document;
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <p>Aici puteți consulta politica noastră de confidențialitate.</p>
 
-@if (ViewBag.PrivacyPolicyExists == true)
+@if (doc != null)
 {
-    <a href="/uploads/PrivacyPolicy.pdf" class="btn btn-outline-primary" target="_blank">
+    <a href="/documente/descarca/@doc.Id" target="_blank" class="btn btn-outline-primary">
         Vizualizează Politica de Confidențialitate (PDF)
     </a>
+    <p class="text-muted mt-2">Publicat pe: @doc.UploadDate.ToLocalTime().ToString("dd.MM.yyyy")</p>
 }
 else
 {
     <p class="text-muted">Documentul Politica de Confidențialitate nu este disponibil momentan.</p>
 }
+
 <div>
 <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary mt-3">
     <i class="fas fa-arrow-left me-1"></i> Înapoi la pagina principală
