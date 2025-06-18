@@ -9,7 +9,7 @@
     </div>
 }
 
-<form asp-action="EditOwnProfile" method="post">
+<form asp-action="EditOwnProfile" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
 
     <div class="form-group">
@@ -31,10 +31,15 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="LogoUrl"></label>
-        <input asp-for="LogoUrl" class="form-control" />
-        <span asp-validation-for="LogoUrl" class="text-danger"></span>
+        <label>Schimbă logo (opțional)</label>
+        <input type="file" name="LogoFile" class="form-control" />
     </div>
+
+    @if (!string.IsNullOrEmpty(Model.LogoUrl))
+    {
+        <p>Logo actual:</p>
+        <img src="@Model.LogoUrl" style="max-height: 100px;" />
+    }
 
     <div class="form-group">
         <label asp-for="WebsiteUrl"></label>

@@ -193,3 +193,49 @@
     dl.row {
         margin-bottom: 1rem; /* Adauga un spatiu intre diferitele sectiuni */
     }
+
+    .flip-card {
+        perspective: 1000px;
+    }
+
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 150px;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+
+    .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+    }
+
+    .flip-card-back {
+        background-color: #f8f9fa;
+        transform: rotateY(180deg);
+    }
+    .partner-logo-box {
+        width: 100%;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        border: 1px solid #e0e0e0;
+        background-color: #fff;
+    }
+
+    .partner-logo-box img {
+        max-height: 90px;
+        max-width: 100%;
+        object-fit: contain;
+    }
+

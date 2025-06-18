@@ -62,19 +62,40 @@ namespace App_CCP.Controllers
 
         // Adauga un partener in baza de date (procesare a formularului de adaugare)
 
-        [Authorize(Roles = "Admin")] 
         [HttpPost] // Procesare date dupace utilizatorul trimite formularul
         [ValidateAntiForgeryToken]
-        public IActionResult AddPartner(Partners partner)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddPartner(Partners partner, IFormFile LogoFile)
         {
+            if (LogoFile != null && LogoFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(LogoFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await LogoFile.CopyToAsync(stream);
+                }
+
+                partner.LogoUrl = "/images/" + fileName; // Cale relativă, bună pentru <img>
+            }
+
             if (ModelState.IsValid) // Verifica daca datele sunt valide
             {
                 _context.Partners.Add(partner); // Adauga partenerul in baza de date
-                _context.SaveChanges(); // Salveaza odificarile
-                return RedirectToAction("Manage"); // Redirectioneaza la pagina de gestionare
+                await _context.SaveChangesAsync();  // Salveaza odificarile
+                return RedirectToAction("Manage");  // Redirectioneaza la pagina de gestionare
             }
+
             return View(partner); // Daca datele nu sunt valide, reafiseaza formularul cu erori
         }
+
 
 
         // Editare partener (formular de editare)
@@ -103,40 +124,81 @@ namespace App_CCP.Controllers
         // Modifica un partener existent
 
         [Authorize(Roles = "Admin,Partner")]
-        [HttpPost] // Procesare date dupa ce utilizatorul trimite formularul
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPartner(Partners partner)
+        public async Task<IActionResult> EditPartner(Partners model, IFormFile? LogoFile)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var existingPartner = await _context.Partners.AsNoTracking().FirstOrDefaultAsync(p => p.Id == partner.Id);
-            if (existingPartner == null)
+            var partner = await _context.Partners.FirstOrDefaultAsync(p => p.Id == model.Id);
+
+            if (partner == null)
                 return NotFound();
 
-            // Restricție pentru partener: nu poate modifica UserId
-            if (User.IsInRole("Partner") && existingPartner.UserId != currentUserId)
+            if (User.IsInRole("Partner") && partner.UserId != currentUserId)
                 return Forbid();
 
-            if (ModelState.IsValid)
+            // Procesare imagine (daca e trimisa)
+            if (LogoFile != null && LogoFile.Length > 0)
             {
-                // Dacă nu e admin, păstrează UserId-ul original
-                if (!User.IsInRole("Admin"))
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var ext = Path.GetExtension(LogoFile.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(ext))
                 {
-                    partner.UserId = existingPartner.UserId;
+                    ModelState.AddModelError("LogoFile", "Fișierul trebuie să fie o imagine validă.");
+                }
+                else
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = Guid.NewGuid() + ext;
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await LogoFile.CopyToAsync(stream);
+
+                    partner.LogoUrl = "/images/" + fileName;
+                }
+            }
+
+            // Curatare erori false de la LogoFile
+            if (ModelState.TryGetValue("LogoFile", out var logoEntry) && logoEntry.Errors.Count > 0)
+            {
+                var onlyLogoError = ModelState.ErrorCount == logoEntry.Errors.Count;
+                if (onlyLogoError)
+                {
+                    logoEntry.Errors.Clear();
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    var users = await _userManager.GetUsersInRoleAsync("Partner");
+                    ViewBag.UsersList = new SelectList(users, "Id", "FullName", model.UserId);
                 }
 
-                _context.Partners.Update(partner);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Partenerul a fost actualizat cu succes.";
-                return RedirectToAction("EditPartner", new { id = partner.Id });
+                return View(model);
             }
 
-            // Reîncarcă lista de utilizatori în caz de eroare de validare
+            // Actualizare câmpuri
+            partner.Name = model.Name;
+            partner.Description = model.Description;
+            partner.DiscountDetails = model.DiscountDetails;
+            partner.WebsiteUrl = model.WebsiteUrl;
+
+            // Doar adminul poate schimba utilizatorul asociat
             if (User.IsInRole("Admin"))
             {
-                var users = await _userManager.GetUsersInRoleAsync("Partner");
-                ViewBag.UsersList = new SelectList(users, "Id", "FullName", partner.UserId);
+                partner.UserId = model.UserId;
             }
-            return View(partner);
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Partenerul a fost actualizat cu succes.";
+
+            return RedirectToAction("EditPartner", new { id = partner.Id });
         }
 
         // sterge un partener
@@ -215,7 +277,7 @@ namespace App_CCP.Controllers
 
         [Authorize(Roles = "Partner")]
         [HttpPost]
-        public async Task<IActionResult> EditOwnProfile(Partners model)
+        public async Task<IActionResult> EditOwnProfile(Partners model, IFormFile? LogoFile)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var partner = await _context.Partners.FirstOrDefaultAsync(p => p.Id == model.Id && p.UserId == userId);
@@ -223,22 +285,58 @@ namespace App_CCP.Controllers
             if (partner == null)
                 return Forbid(); // Securitate: să nu poată edita alt partener
 
-            if (ModelState.IsValid)
+            // Gestionare fișier logo
+            if (LogoFile != null && LogoFile.Length > 0)
             {
-                partner.Name = model.Name;
-                partner.Description = model.Description;
-                partner.DiscountDetails = model.DiscountDetails;
-                partner.LogoUrl = model.LogoUrl;
-                partner.WebsiteUrl = model.WebsiteUrl;
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var ext = Path.GetExtension(LogoFile.FileName).ToLower();
 
-                _context.Partners.Update(partner);
-                await _context.SaveChangesAsync();
+                if (!allowedExtensions.Contains(ext))
+                {
+                    ModelState.AddModelError("LogoFile", "Fișierul trebuie să fie o imagine validă.");
+                }
+                else
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                    Directory.CreateDirectory(uploadsFolder);
 
-                TempData["SuccessMessage"] = "Profilul a fost actualizat cu succes.";
-                return RedirectToAction("EditOwnProfile");
+                    var fileName = Guid.NewGuid().ToString() + ext;
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await LogoFile.CopyToAsync(stream);
+                    }
+
+                    partner.LogoUrl = "/images/" + fileName;
+                }
             }
 
-            return View(model);
+            // daca doar LogoFile a fost invalid, sterge eroarea
+            if (ModelState.TryGetValue("LogoFile", out var logoEntry) && logoEntry.Errors.Count > 0)
+            {
+                var onlyLogoError = ModelState.ErrorCount == logoEntry.Errors.Count;
+                if (onlyLogoError)
+                {
+                    logoEntry.Errors.Clear();
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Actualizare campuri
+            partner.Name = model.Name;
+            partner.Description = model.Description;
+            partner.DiscountDetails = model.DiscountDetails;
+            partner.WebsiteUrl = model.WebsiteUrl;
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Profilul a fost actualizat cu succes.";
+            return RedirectToAction("EditOwnProfile");
         }
 
         #endregion

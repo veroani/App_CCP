@@ -56,7 +56,8 @@ namespace App_CCP.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var partners = _context.Partners.ToList(); 
+            return View(partners);
         }
 
         public IActionResult Error()

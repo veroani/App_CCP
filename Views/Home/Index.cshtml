@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<App_CCP.Models.Partners>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -14,5 +15,27 @@
         </details>
     </aside>
 </div>
+
+<div class="row">
+    @foreach (var partner in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="partner-logo-box">
+                            <img src="@partner.LogoUrl" alt="@partner.Name" />
+                        </div>
+                    </div>
+                    <div class="flip-card-back p-2">
+                        <h5>@partner.Name</h5>
+                        <p>@partner.DiscountDetails</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 
 

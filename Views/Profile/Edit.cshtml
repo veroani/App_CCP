@@ -54,7 +54,7 @@
 
                     <div class="mb-3">
                         <required-label asp-for="DateOfBirth" class="form-label">Data nașterii</required-label>
-                        <input asp-for="DateOfBirth" type="date"  />
+                        <input asp-for="DateOfBirth" type="date" class="form-control" />
                         <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                     </div>
 
@@ -119,9 +119,6 @@
     </button>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
 <script>
     document.getElementById("profilePictureInput").addEventListener("change", function (event) {
         const file = event.target.files[0];
@@ -134,3 +131,4 @@
         }
     });
 </script>
+
