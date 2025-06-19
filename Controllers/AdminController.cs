@@ -43,36 +43,40 @@ namespace App_CCP.Controllers
 
         public IActionResult Statistics(DateTime? expirationDate, string uniqueCode)
         {
-            // Filtrăm utilizatorii pe baza datei de expirare a cardului
-            var query = _userManager.Users.AsQueryable();
+            var baseQuery = _userManager.Users.AsQueryable();
+            var today = DateTime.Today;
 
-            // Filtrare după data de expirare
+            // calculeaza totalul cardurilor active care vor expira inainte de data x, cu data expirarii intre ziua curenta si data data.
             if (expirationDate.HasValue)
             {
-                query = query.Where(u => u.ExpirationDate.Date <= expirationDate.Value.Date);
+                ViewBag.FilteredExpirationDate = expirationDate.Value.ToString("dd.MM.yyyy");
+
+                ViewBag.TotalFilteredByExpiration = baseQuery
+                    .Where(u => u.ExpirationDate > today && u.ExpirationDate.Date <= expirationDate.Value.Date)
+                    .Count();
             }
 
-            // Filtrare după codul unic
+            // aplicam si in query-ul principal de afisare
+            var filteredQuery = baseQuery;
+
+            if (expirationDate.HasValue)
+            {
+                filteredQuery = filteredQuery
+                    .Where(u => u.ExpirationDate > today && u.ExpirationDate.Date <= expirationDate.Value.Date);
+            }
+
             if (!string.IsNullOrEmpty(uniqueCode))
             {
-                query = query.Where(u => u.UniqueCode.Contains(uniqueCode)); // Poți schimba cu `==` pentru un meci exact
+                filteredQuery = filteredQuery.Where(u => u.UniqueCode.Contains(uniqueCode));
             }
 
-            // Obține utilizatorii care se potrivesc criteriilor
-            var users = query.ToList();
-
-            // Numărul de utilizatori care au rezultat din căutare
-            var totalCount = users.Count();
-
-            // Trimitem utilizatorii și numărul acestora în View
-            ViewBag.TotalCount = totalCount;
+            var users = filteredQuery.ToList();
+            ViewBag.TotalCount = users.Count;
 
             return View(users);
         }
 
-
         // Lista utilizatorilor
-
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -80,7 +84,7 @@ namespace App_CCP.Controllers
 
             foreach (var user in users)
             {
-                var roles = await _userManager.GetRolesAsync(user); //important
+                var roles = await _userManager.GetRolesAsync(user); //important, obtine lista de roluri asociate acelui utilizator (user).
 
                 model.Add(new UserRoleViewModel
                 {
@@ -111,7 +115,7 @@ namespace App_CCP.Controllers
                     Email = user.Email,
                     IsAdmin = roles.Contains("Admin"),
                     IsPartner = roles.Contains("Partner"),
-                    Roles = roles.ToList() //aici era lipsa
+                    Roles = roles.ToList()
                 });
             }
 
@@ -178,7 +182,7 @@ namespace App_CCP.Controllers
                 usersQuery = usersQuery.Where(u =>
                     (u.UserName ?? string.Empty).Contains(searchQuery) ||
                     (u.Email ?? string.Empty).Contains(searchQuery) ||
-                    (u.FullName ?? string.Empty).Contains(searchQuery) ||  // Căutare după nume complet
+                    (u.FullName ?? string.Empty).Contains(searchQuery) ||  // Cautare după nume complet
                     (u.UniqueCode ?? string.Empty).Contains(searchQuery));
             }
 
@@ -187,7 +191,7 @@ namespace App_CCP.Controllers
             ViewBag.UserManager = _userManager;
 
             // intarziere artificiala pentru a simula o cautare de durata
-            await Task.Delay(1000);
+           await Task.Delay(1000);
 
             return View(users);
         }
@@ -316,7 +320,8 @@ namespace App_CCP.Controllers
                 return Json(new { success = false, message = "Utilizatorul nu a fost găsit." });
             }
 
-            // Validare concurență
+            // Validare concurenta = previne suprascrierea modificărilor facute de altcineva intre momentul
+            // in care utilizatorul a incarcat formularul si momentul in care il trimite.
             if (user.ConcurrencyStamp != model.ConcurrencyStamp)
             {
                 return Json(new

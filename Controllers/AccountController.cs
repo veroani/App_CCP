@@ -291,11 +291,11 @@ namespace App_CCP.Controllers
             {
                 var identity = await base.GenerateClaimsAsync(user);
 
-                // Adaugă claim-uri personalizate
+                // Adauga claim-uri personalizate
                 identity.AddClaim(new Claim("ProfilePicture", user.ProfilePicture ?? "/images/default-profile.png"));
                 identity.AddClaim(new Claim("FullName", user.FullName ?? user.UserName ?? "Utilizator"));
 
-                // Adaugă explicit rolurile utilizatorului
+                // Adauga explicit rolurile utilizatorului
                 var roles = await UserManager.GetRolesAsync(user);
                 foreach (var role in roles)
                 {

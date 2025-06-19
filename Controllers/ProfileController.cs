@@ -44,7 +44,7 @@ namespace App_CCP.Controllers
         {
             if (User.Identity == null || !User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Login", "Account"); // Redirecționăm utilizatorul la pagina de login dacă nu este autentificat
+                return RedirectToAction("Login", "Account"); // Redirectionam utilizatorul la pagina de login daca nu este autentificat
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -173,7 +173,7 @@ namespace App_CCP.Controllers
                     var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
                     var principal = new ClaimsPrincipal(identity);
 
-                    // inlocuieșse identitatea activa
+                    // inlocuieste identitatea activa
                     await _signInManager.SignOutAsync();
                     await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, principal);
 

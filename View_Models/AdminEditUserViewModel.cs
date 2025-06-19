@@ -53,7 +53,7 @@ namespace App_CCP.View_Models
         public Occupation Occupation { get; set; } = Occupation.Copil;
 
         [Display(Name = "Fotografie de profil")] 
-        public IFormFile? ProfilePicture { get; set; } // Pentru încărcarea de fișiere
+        public IFormFile? ProfilePicture { get; set; } // Pentru incarcarea de fisiere
 
         [Display(Name = "Imaginea curentă")] 
         public string? ProfilePicturePath { get; set; } // Pentru calea imaginii existente

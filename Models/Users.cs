@@ -29,7 +29,7 @@ namespace App_CCP.Models
         public bool IsCardApprovedByAdmin { get; set; }
         public bool IsCardRevoked { get; set; } = false;
 
-        // Câmpul pentru data expirării cardului cultural
+        // Campul pentru data expirării cardului cultural
         public DateTime ExpirationDate { get; set; }
      
         public bool IsFirstLogin { get; set; } = true;
@@ -50,10 +50,10 @@ namespace App_CCP.Models
         {
             if (string.IsNullOrEmpty(UniqueCode))
             {
-                // Generăm un număr aleator între 10000 și 99999
+                // generam un număr aleator între 10000 și 99999
                 var randomNumber = new Random().Next(10000, 99999);
 
-                // Adăugăm litera "A" la începutul codului
+                // adaugam litera "A" la începutul codului
                 UniqueCode = $"A{randomNumber}";
             }
         }

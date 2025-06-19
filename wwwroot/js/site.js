@@ -12,7 +12,7 @@ $(function () {
         var formData = new FormData(this);
 
         $.ajax({
-            url: '/Admin/EditUser', // Asigura-te ca URL-ul este corect
+            url: '/Admin/EditUser', // ne asiguram ca URL-ul este corect
             type: 'POST',
             data: formData,
             processData: false,

@@ -193,7 +193,8 @@
     dl.row {
         margin-bottom: 1rem; /* Adauga un spatiu intre diferitele sectiuni */
     }
-
+    
+    /* Stiluri pentru flip-card */
     .flip-card {
         perspective: 1000px;
     }

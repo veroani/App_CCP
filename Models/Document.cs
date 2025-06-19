@@ -10,7 +10,7 @@ namespace App_CCP.Models
         public string FileName { get; set; } = string.Empty; // Numele pe disc
 
         [Required]
-        public string OriginalName { get; set; } = string.Empty; // Numele încărcat de utilizator
+        public string OriginalName { get; set; } = string.Empty; // Numele incarcat de utilizator
 
         [Required]
         public string ContentType { get; set; } = string.Empty;

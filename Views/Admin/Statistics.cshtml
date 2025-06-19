@@ -6,7 +6,7 @@
     <div class="col-md-6">
         <form asp-controller="Admin" asp-action="Statistics" method="get">
             <div class="input-group">
-                <input type="date" name="expirationDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <input type="date" name="expirationDate" class="form-control"/>
                 <input type="text" name="uniqueCode" class="form-control" placeholder="Cod unic" />
                 <button type="submit" class="btn btn-primary">Filtrează</button>
             </div>
@@ -40,9 +40,15 @@
     </tbody>
 </table>
 
-<!-- Afișează numărul de utilizatori -->
+<!-- Afiseaza numarul de utilizatori cu card activ -->
 <div class="mt-4">
     <strong>Total rezultate: </strong>@ViewBag.TotalCount
+    @if (ViewBag.FilteredExpirationDate != null)
+    {
+        <br />
+        <strong>Total rezultate carduri active care expiră înainte de @ViewBag.FilteredExpirationDate: </strong>
+        @ViewBag.TotalFilteredByExpiration
+    }
 </div>
 
 <div class="container text-end mt-4">

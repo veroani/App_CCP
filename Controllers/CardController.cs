@@ -75,7 +75,7 @@ public class CardController : Controller
                 Width = 800,
                 Height = 180,
                 Margin = 10,
-                PureBarcode = true // FORȚEAZĂ codul să fie doar linii, fără text
+                PureBarcode = true // forteaza codul să fie doar linii, fără text
             }
         };
 

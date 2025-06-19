@@ -7,7 +7,7 @@ namespace App_CCP.Data
 {
     public class AppDbContext : IdentityDbContext<Users>
     {
-        public DbSet<Partners> Partners { get; set; } // Adaugă DbSet pentru parteneri
+        public DbSet<Partners> Partners { get; set; } // Adauga DbSet pentru parteneri
         public DbSet<Review> Reviews { get; set; }
         public DbSet<NewsItem> NewsItems { get; set; }
         public DbSet<Document> Documents { get; set; }
@@ -40,7 +40,7 @@ namespace App_CCP.Data
                 new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Id = "2", Name = "User", NormalizedName = "USER" }
             );
-            // Configurarea entității Partners
+            // Configurarea entittatii Partners
             builder.Entity<Partners>(entity =>
             {
                 entity.Property(p => p.Name)

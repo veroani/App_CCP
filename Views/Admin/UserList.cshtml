@@ -6,7 +6,7 @@
 
 <h1>Lista Utilizatorilor</h1>
 
-<!-- Formular de căutare -->
+<!-- Formular de cautare -->
 <form method="get" asp-action="UserList">
     <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Căutare după email, nume sau cod unic..." name="searchQuery" value="@Context.Request.Query["searchQuery"]" />
@@ -15,11 +15,11 @@
     </div>
 </form>
 
-@if (!Model.Any())  // Dacă nu sunt utilizatori
+@if (!Model.Any())  // Daca nu sunt utilizatori
 {
     <p>Nu există utilizatori care să corespundă criteriilor de căutare.</p>
 }
-else  //Dacă există utilizatori
+else  //Daca exista utilizatori
 {
     <div class="table-responsive">
         <table class="table">
@@ -59,7 +59,7 @@ else  //Dacă există utilizatori
                                     <i class="fas fa-trash"></i>
                                 </a>
 
-                                <!-- Dropdown acțiuni secundare -->
+                                <!-- Dropdown actiuni secundare -->
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Mai multe">
                                         <i class="fas fa-ellipsis-v"></i>

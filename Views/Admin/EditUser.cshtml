@@ -97,7 +97,7 @@
 
                     <div class="mb-3">
                         <label asp-for="ExpirationDate" class="form-label">Data expirării cardului</label>
-                        <input asp-for="ExpirationDate" type="date" class="form-control" />
+                        <input asp-for="ExpirationDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         <span asp-validation-for="ExpirationDate" class="text-danger"></span>
                     </div>
                     

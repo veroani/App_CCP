@@ -50,13 +50,13 @@ namespace App_CCP.Controllers
 
                 _context.Reviews.Add(review);
                 _context.SaveChanges();
-                return RedirectToAction("Index"); // După adăugarea review-ului, se redirecționează la lista de review-uri
+                return RedirectToAction("Index"); // dupa adaugarea review-ului, se redirectioneaza la lista de review-uri
             }
 
-            return View(review); // Dacă există erori de validare, returnează formularul cu erorile
+            return View(review); // Daca există erori de validare, returnează formularul cu erorile
         }
 
-        // Afișează review-urile nepublicate pentru admini
+        // afiseaza review-urile nepublicate pentru admini
         [Authorize(Roles = "Admin")]
         public IActionResult Manage()
         {
@@ -64,7 +64,7 @@ namespace App_CCP.Controllers
             return View(reviews);
         }
 
-        // Publică review-ul
+        // publica review-ul
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult PublishReview(int id)
@@ -89,7 +89,7 @@ namespace App_CCP.Controllers
             return View("PublishedReviews", publishedReviews);
         }
 
-        // Sterge un review
+        // sterge un review
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult DeleteReview(int id)

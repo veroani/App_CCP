@@ -93,7 +93,7 @@ namespace App_CCP.Controllers
                 return RedirectToAction("Manage");  // Redirectioneaza la pagina de gestionare
             }
 
-            return View(partner); // Daca datele nu sunt valide, reafiseaza formularul cu erori
+            return View(partner); // daca datele nu sunt valide, reafiseaza formularul cu erori
         }
 
 
@@ -183,7 +183,7 @@ namespace App_CCP.Controllers
                 return View(model);
             }
 
-            // Actualizare câmpuri
+            // actualizare campuri
             partner.Name = model.Name;
             partner.Description = model.Description;
             partner.DiscountDetails = model.DiscountDetails;
@@ -238,7 +238,7 @@ namespace App_CCP.Controllers
                 .Where(u => u.ExpirationDate >= today) // Selectează doar utilizatorii cu card valabil
                 .AsQueryable();
 
-            // Dacă există un criteriu de căutare, aplică filtrul
+            // Dc exista un criteriu de cautare, aplică filtrul
             if (!string.IsNullOrEmpty(searchQuery))
             {
                 usersQuery = usersQuery.Where(u =>
@@ -283,9 +283,9 @@ namespace App_CCP.Controllers
             var partner = await _context.Partners.FirstOrDefaultAsync(p => p.Id == model.Id && p.UserId == userId);
 
             if (partner == null)
-                return Forbid(); // Securitate: să nu poată edita alt partener
+                return Forbid(); // Securitate: sa nu poată edita alt partener
 
-            // Gestionare fișier logo
+            // Gestionare fisier logo
             if (LogoFile != null && LogoFile.Length > 0)
             {
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
