@@ -1,12 +1,12 @@
 # Numele Proiectului
   Aplicație web pentru emiterea unui card cultural
 
-# Livrabilele proiectului
+## Livrabilele proiectului
 - Codul sursă complet.
 - Instrucțiuni pentru compilarea aplicației.
 - Instrucțiuni pentru instalarea și lansarea aplicației.
 
-# Adresa repository-ului
+## Adresa repository-ului
 [https://github.com/veroani/App_CCP/]
 
 ## Compilare
