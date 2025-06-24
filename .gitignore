@@ -98,6 +98,7 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+
 # Chutzpah Test files
 _Chutzpah*
 
@@ -361,3 +362,27 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Config local privat
+appsettings.Development.json
+
+# Fisiere temporare si binare suplimentare
+*.log
+*.tmp
+logs/
+*.trace
+
+# Baze de date si backup-uri
+*backup*
+*.bak
+*.sql
+*.json
+
+# Arhive
+*.zip
+*.rar
+*.7z
+*.tar
+
+# Dotnet user secrets
+secrets.json

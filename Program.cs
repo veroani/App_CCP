@@ -9,31 +9,32 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using static App_CCP.Controllers.AccountController;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Seteaza cultura
+// Incarca fisierele de configurare, inclusiv cele locale (daca exista)
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+// Seteaza cultura aplicatiei
 var cultureInfo = new CultureInfo("ro-RO");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-// Adauga servicii
+// Adauga servicii MVC si TempData
 builder.Services.AddControllersWithViews()
-     .AddSessionStateTempDataProvider();
-builder.Services.AddSession();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<Users>, CustomClaimsPrincipalFactory>();
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.AddOptions<EmailSettings>()
-    .Bind(builder.Configuration.GetSection("EmailSettings"))
-    .ValidateDataAnnotations()
-    .Validate(s => !string.IsNullOrWhiteSpace(s.FromEmail), "FromEmail must be configured.");
-builder.Services.AddTransient<ICustomEmailSender, CustomEmailSender>();
-builder.Logging.AddConsole();
+    .AddSessionStateTempDataProvider();
 builder.Services.AddRazorPages();
+builder.Services.AddSession();
 
+// Configurare DBContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
+// Identity & autentificare
 builder.Services.AddIdentity<Users, IdentityRole>(options =>
 {
     options.Password.RequireNonAlphanumeric = false;
@@ -48,9 +49,25 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
+// Injectie dependente
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<Users>, CustomClaimsPrincipalFactory>();
+
+// EmailSettings (safe loading & validation)
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddOptions<EmailSettings>()
+    .Bind(builder.Configuration.GetSection("EmailSettings"))
+    .ValidateDataAnnotations()
+    .Validate(s => !string.IsNullOrWhiteSpace(s.FromEmail), "FromEmail must be configured.");
+
+builder.Services.AddTransient<ICustomEmailSender, CustomEmailSender>();
+
+// Logging
+builder.Logging.AddConsole();
+
 var app = builder.Build();
 
-// Seed baza de date
+// Seed initial baza de date (daca e cazul)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -65,13 +82,14 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configureaza pipeline-ul
+// Pipeline middleware
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapRazorPages();
 
 app.MapControllerRoute(
