@@ -50,9 +50,11 @@ dotnet run
 
 ## Observații 
 - Fișierele binare precum bin/, obj/ și fișierele de backup compilate NU sunt incluse în repository, conform .gitignore.
-- Pentru email, e nevoie de configurare SMTP în appsettings.json.
+- Pentru email, e nevoie de configurare SMTP în appsettings.Development.json.
 - Aplicația poate fi compilată și rulată local prin Visual Studio. 
-- După clonarea din GitHub și restaurarea pachetelor, baza de date este creată automat prin migrații EF Core. 
-- Lansarea aplicației se face prin dotnet run, aceasta fiind accesibilă pe localhost într-un browser. Configurația SMTP și stringul de conexiune pot fi ajustate în appsettings.json.
-  
-În scopul testării locale, fișierul appsettings.json este inclus în proiectul privat de pe GitHub. În cazul publicării aplicației sau colaborării externe, se va exclude din repo și se va folosi Secret Manager sau variabile de mediu.
+- După clonarea din GitHub și restaurarea pachetelor, baza de date este creată automat prin migrări EF Core. 
+
+## Notă de securitate
+Fișierul appsettings.json inclus în repository conține exemple de configurare pentru stringul de conexiune, datele de autentificare și setările SMTP. Aceste valori NU sunt reale, ci servesc ca model.
+! Pentru testare locală, este necesara crearea unui fișier: appsettings.Development.json care va conține datele reale (parole, stringuri de conexiune etc.). Acest fișier este exclus din GitHub prin .gitignore.
+Aplicația este configurată să încarce automat acest fișier dacă este prezent, conform setup-ului din Program.cs.

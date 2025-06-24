@@ -386,3 +386,9 @@ logs/
 
 # Dotnet user secrets
 secrets.json
+
+# Backup baze de date
+Db_App_CCP_backup*
+*.bak
+*.sql
+*.json
