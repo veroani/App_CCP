@@ -373,7 +373,7 @@ logs/
 *.trace
 
 # Baze de date si backup-uri
-*backup*
+*bakup*
 *.bak
 *.sql
 *.json
@@ -386,9 +386,3 @@ logs/
 
 # Dotnet user secrets
 secrets.json
-
-# Backup baze de date
-Db_App_CCP_backup*
-*.bak
-*.sql
-*.json

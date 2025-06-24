@@ -19,7 +19,6 @@ Aplicația își propune să automatizeze procesul de emitere și gestionare a u
   - `Program.cs` – punctul de intrare al aplicației
   - `appsettings.json` – configurare aplicație
   - `.gitignore` – excluderea fișierelor binare și temporare
-  - `Db_App_CCP_backup` – backup 
 - Instrucțiuni pentru compilarea aplicației.
 - Instrucțiuni pentru instalarea și lansarea aplicației.
 
